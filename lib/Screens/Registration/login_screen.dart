@@ -1,0 +1,241 @@
+import 'dart:ui';
+import 'dart:developer' as developer;
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+
+import 'package:amplify_flutter/amplify.dart';
+import 'package:amplify_core/amplify_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../home_screen.dart';
+import '../user_info.dart';
+import 'signup_screen.dart';
+import '../../Utils/email_validator.dart';
+import '../../Utils/google_button.dart';
+import 'google_signin.dart';
+
+class LoginScreen extends StatefulWidget {
+  LoginScreen({Key key}) : super(key: key);
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isHidden = true;
+  bool _isSignin = false;
+  UserInfo _userInfo;
+
+  Future<void> _loginButtonOnPressed(BuildContext context) async {
+    if (_formKey.currentState.validate()) {
+      final email = _emailController.text;
+      final password = _passwordController.text;
+      _userInfo = UserInfo(email: email, password: password);
+
+      try {
+        await Amplify.Auth.signOut();
+        var signInResult = await Amplify.Auth.signIn(
+          username: email,
+          password: password,
+        );
+        _isSignin = signInResult.isSignedIn;
+        if (_isSignin) {
+          Navigator.of(context).pushReplacementNamed('/home_screen');
+        }
+      }on UserNotFoundException catch(e){
+        _scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            content: Text("Email is not registered"),
+          ),
+        );
+      }on NotAuthorizedException catch (e) {
+        _scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            content: Text("Incorrect Email and Password"),
+          ),
+        );
+      }
+      on UserNotConfirmedException catch(e){
+        Navigator.of(context).pushNamed('/verify_email', arguments: _userInfo );
+      }
+
+    }
+  }
+
+
+  Future<void> _signUpButtonOnPressed(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SignUpScreen()),
+    );
+  }
+
+
+  void _togglePasswordView() {
+    setState(() {
+      _isHidden = !_isHidden;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    var scrWidth = MediaQuery.of(context).size.width;
+    var scrHeight = MediaQuery.of(context).size.height;
+    return SafeArea(
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Form(
+            key: _formKey,
+            child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      // Image(
+                      //   image: AssetImage('assets/images/chef.png'),
+                      // ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 40, top: 100),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'Welcome Back!',
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontFamily: 'Open Sans',
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(40,100,40,0),
+                        child: TextFormField(
+                          keyboardType: TextInputType.emailAddress,
+                          cursorColor: Theme.of(context).primaryColor,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            labelText: "Email",
+                            border: OutlineInputBorder(),
+                          ),
+                          controller: _emailController,
+                          validator: (value) =>
+                          !validateEmail(value) ? "Email is Invalid" : null,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(40,20,40,0),
+                        child: TextFormField(
+                          obscureText: _isHidden,
+                          cursorColor: Theme.of(context).primaryColor,
+                          decoration: InputDecoration(
+                            contentPadding:
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                            border: OutlineInputBorder(),
+                            labelText: 'Password',
+                            suffix: InkWell(
+                              onTap: _togglePasswordView,
+                              child: Icon(
+                                _isHidden ? Icons.visibility : Icons.visibility_off,
+                              ),
+                            ),
+                          ),
+                          controller: _passwordController,
+                          validator: (value) =>
+                          value.isEmpty ? "Password is invalid" : null,
+                        ),
+                      ),
+                      SizedBox(
+                        height:30,
+                      ),
+                      FlatButton(
+                        child: Text(
+                          "Login",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        onPressed: () => _loginButtonOnPressed(context),
+                        minWidth: 130,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(5.0),
+                        ),
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: InkWell(
+                          onTap: () => _signUpButtonOnPressed(context),
+                          child: new Text("Don't have account? Sign up"),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ClipPath(
+                    clipper: OuterClipperPart(),
+                    child: Container(
+                      color: Color(0xfffe724c),
+                      width: scrWidth,
+                      height: scrHeight,
+                    ),
+                  ),
+
+                  ClipPath(
+                    clipper: InnerClipperPart(),
+                    child: Container(
+                      color: Color(0xffa32200),
+                      width: scrWidth,
+                      height: scrHeight,
+                    ),
+                  ),
+                ]
+
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class OuterClipperPart extends CustomClipper<Path>{
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.moveTo(size.width/2, 0);
+    path.lineTo(size.width, 0 );
+    path.lineTo(size.width, size.height/4);
+    path.cubicTo(size.width*0.55, size.height*0.16, size.width*0.85, size.height*0.05, size.width/2, 0);
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return true;
+  }
+
+}
+
+class InnerClipperPart extends CustomClipper<Path>{
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.moveTo(size.width*0.7, 0);
+    path.lineTo(size.width, 0 );
+    path.lineTo(size.width,   size.height*0.1);
+    path.quadraticBezierTo(size.width*0.8, size.height*0.11, size.width*0.7, 0);
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return true;
+  }
+
+}

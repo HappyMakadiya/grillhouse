@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-grillhouse-dev-190428-authRole",
+      "UnauthRoleArn": "arn:aws:iam::399297844740:role/amplify-grillhouse-dev-190428-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::399297844740:role/amplify-grillhouse-dev-190428-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-grillhouse-dev-190428-deployment",
+      "UnauthRoleName": "amplify-grillhouse-dev-190428-unauthRole",
+      "StackName": "amplify-grillhouse-dev-190428",
+      "StackId": "arn:aws:cloudformation:us-east-1:399297844740:stack/amplify-grillhouse-dev-190428/0b878cc0-71ee-11eb-b634-0ea1c0ab8f7b",
+      "AmplifyAppId": "dasqivzc0gxst"
+    },
+    "categories": {
+      "auth": {
+        "grillhouse921aca21": {}
+      }
+    }
+  }
+}
