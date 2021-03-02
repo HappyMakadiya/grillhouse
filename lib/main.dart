@@ -64,7 +64,6 @@ class _UserStateState extends State<UserState> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     autoLogIn();
   }
