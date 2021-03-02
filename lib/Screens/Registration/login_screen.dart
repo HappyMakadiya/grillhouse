@@ -7,15 +7,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:amplify_flutter/amplify.dart';
-import 'package:amplify_core/amplify_core.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../home_screen.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import '../user_info.dart';
 import 'signup_screen.dart';
 import '../../Utils/email_validator.dart';
-import '../../Utils/google_button.dart';
-import 'google_signin.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key key}) : super(key: key);
@@ -35,10 +30,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _loginButtonOnPressed(BuildContext context) async {
     if (_formKey.currentState.validate()) {
+      final ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal);
+      pr.style(progressWidget: CupertinoActivityIndicator());
+
       final email = _emailController.text;
       final password = _passwordController.text;
       _userInfo = UserInfo(email: email, password: password);
-
+      await pr.show();
       try {
         await Amplify.Auth.signOut();
         var signInResult = await Amplify.Auth.signIn(
@@ -47,28 +45,37 @@ class _LoginScreenState extends State<LoginScreen> {
         );
         _isSignin = signInResult.isSignedIn;
         if (_isSignin) {
+          await pr.hide();
           Navigator.of(context).pushReplacementNamed('/home_screen');
         }
       }on UserNotFoundException catch(e){
+        await pr.hide();
         _scaffoldKey.currentState.showSnackBar(
           SnackBar(
             content: Text("Email is not registered"),
           ),
         );
       }on NotAuthorizedException catch (e) {
+        await pr.hide();
         _scaffoldKey.currentState.showSnackBar(
           SnackBar(
             content: Text("Incorrect Email and Password"),
           ),
         );
-      }
-      on UserNotConfirmedException catch(e){
+      } on UserNotConfirmedException catch(e){
+        await pr.hide();
         Navigator.of(context).pushNamed('/verify_email', arguments: _userInfo );
+      }  catch(e){
+        await pr.hide();
+        _scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            content: Text("Something Went Wrong! Try again later."),
+          ),
+        );
       }
 
     }
   }
-
 
   Future<void> _signUpButtonOnPressed(BuildContext context) {
     Navigator.push(
@@ -93,7 +100,6 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Scaffold(
         key: _scaffoldKey,
         body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
           child: Form(
             key: _formKey,
             child: Stack(
@@ -150,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           controller: _passwordController,
                           validator: (value) =>
-                          value.isEmpty ? "Password is invalid" : null,
+                          value.isEmpty || value.length < 8 ? "Password is invalid" : null,
                         ),
                       ),
                       SizedBox(
@@ -177,23 +183,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
-                  ClipPath(
-                    clipper: OuterClipperPart(),
-                    child: Container(
-                      color: Color(0xfffe724c),
-                      width: scrWidth,
-                      height: scrHeight,
-                    ),
-                  ),
-
-                  ClipPath(
-                    clipper: InnerClipperPart(),
-                    child: Container(
-                      color: Color(0xffa32200),
-                      width: scrWidth,
-                      height: scrHeight,
-                    ),
-                  ),
                 ]
 
             ),
@@ -202,40 +191,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
-
-class OuterClipperPart extends CustomClipper<Path>{
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.moveTo(size.width/2, 0);
-    path.lineTo(size.width, 0 );
-    path.lineTo(size.width, size.height/4);
-    path.cubicTo(size.width*0.55, size.height*0.16, size.width*0.85, size.height*0.05, size.width/2, 0);
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return true;
-  }
-
-}
-
-class InnerClipperPart extends CustomClipper<Path>{
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.moveTo(size.width*0.7, 0);
-    path.lineTo(size.width, 0 );
-    path.lineTo(size.width,   size.height*0.1);
-    path.quadraticBezierTo(size.width*0.8, size.height*0.11, size.width*0.7, 0);
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return true;
-  }
-
 }

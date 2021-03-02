@@ -6,7 +6,6 @@ import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:grillhouse/Screens/Registration/login_screen.dart';
 import 'package:grillhouse/Utils/route_generator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'Screens/home_screen.dart';
 import 'amplifyconfiguration.dart';
 
@@ -78,11 +77,12 @@ class _UserStateState extends State<UserState> {
   }
   @override
   Widget build(BuildContext context) {
-    if(_isLoggedIn){
-      return HomeScreen();
-    } else{
-      return LoginScreen();
-    }
+    // if(_isLoggedIn){
+    //   return HomeScreen();
+    // } else{
+    //   return LoginScreen();
+    // }
+    return HomeScreen();
   }
 }
 

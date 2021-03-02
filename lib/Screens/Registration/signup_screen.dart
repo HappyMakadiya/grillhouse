@@ -1,7 +1,9 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grillhouse/Screens/user_info.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'email_verification_screen.dart';
 import '../../Utils/email_validator.dart';
 
@@ -24,10 +26,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   Future<void> _createAccountOnPressed(BuildContext context) async {
     if (_formKey.currentState.validate()) {
+      final ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal);
+      pr.style(progressWidget: CupertinoActivityIndicator());
+
       final email = _emailController.text;
       final password = _passwordController.text;
       final name = _nameController.text;
       _userInfo = UserInfo(email: email, password: password, name: name);
+      await pr.show();
       try {
         var signupResult = await Amplify.Auth.signUp(
             username: email,
@@ -35,15 +41,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
             options: CognitoSignUpOptions(userAttributes: {'email': email, 'name':name}));
 
         if (signupResult.isSignUpComplete) {
+          await pr.hide();
           Navigator.of(context).pushNamed('/verify_email', arguments: _userInfo );
         }
       } on UsernameExistsException catch (e) {
+        await pr.hide();
         _scaffoldKey.currentState.showSnackBar(
           SnackBar(
             content: Text("User Already Exist! Try another email address."),
           ),
         );
       } catch(e){
+        await pr.hide();
         _scaffoldKey.currentState.showSnackBar(
           SnackBar(
             content: Text("Something Went Wrong! Try again later."),
@@ -148,8 +157,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                       ),
                       controller: _passwordController,
-                      validator: (value) => value.length < 6
-                          ? "Password must be atleast 6 letter long"
+                      validator: (value) => value.length < 8
+                          ? "Password must be atleast 8 letter long"
                           : null,
                     ),
                   ),

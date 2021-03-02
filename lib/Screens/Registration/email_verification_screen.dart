@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_core/amplify_core.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../home_screen.dart';
 import '../user_info.dart';
@@ -25,29 +27,23 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
   Future<void> _submitCode(BuildContext context) async {
     if (_formKey1.currentState.validate()) {
+      final ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal);
+      pr.style(progressWidget: CupertinoActivityIndicator());
+
       final confirmationCode = _confirmationCodeController.text;
 
+      await pr.show();
       try {
         final SignUpResult response = await Amplify.Auth.confirmSignUp(
           username: widget.userinfo.email,
           confirmationCode: confirmationCode,
         );
         if (response.isSignUpComplete) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('email', widget.userinfo.email);
-          prefs.setString('password', widget.userinfo.password);
-
-          final user = await Amplify.Auth.signIn(
-              username: widget.userinfo.email,
-              password: widget.userinfo.password
-          );
-
-          if(user.isSignedIn){
-            Navigator.of(context).pushReplacementNamed('/home_screen');
-          }
-
+            await pr.hide();
+            Navigator.of(context).pushReplacementNamed('/login_screen');
         }
       }catch (e) {
+        await pr.hide();
         _scaffoldKey.currentState.showSnackBar(
           SnackBar(
             content: Text((e as AuthException).message),
@@ -87,7 +83,11 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
               ),
               FlatButton(
                 onPressed: () async {
+                  final ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal);
+                  pr.style(progressWidget: CupertinoActivityIndicator());
+                  await pr.show();
                   await Amplify.Auth.resendSignUpCode(username: widget.userinfo.email);
+                  await pr.hide();
                   _scaffoldKey.currentState.showSnackBar(
                     SnackBar(
                       content: Text("Verification Code is resend."),
