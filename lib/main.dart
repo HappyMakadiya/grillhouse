@@ -76,12 +76,11 @@ class _UserStateState extends State<UserState> {
   }
   @override
   Widget build(BuildContext context) {
-    // if(_isLoggedIn){
-    //   return HomeScreen();
-    // } else{
-    //   return LoginScreen();
-    // }
-    return HomeScreen();
+    if(_isLoggedIn){
+      return HomeScreen();
+    } else{
+      return LoginScreen();
+    }
   }
 }
 
