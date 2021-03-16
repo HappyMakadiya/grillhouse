@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:grillhouse/Utils/food_info.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 Color primaryGreen = Color(0xff416d6d);
 List<BoxShadow> shadowList = [
-  BoxShadow(color: Colors.grey[300], blurRadius: 20, offset: Offset(0, 5))
+  BoxShadow(color: Colors.black12, blurRadius: 20, offset: Offset(0, 5))
 ];
 
-
-
-
-List<Food> mainfoodList = [
+List<Food> mainFoodList = [
     Food(
       foodId: 0,
       foodName: "Burger",

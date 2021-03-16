@@ -14,7 +14,7 @@ class MyDrawer extends StatefulWidget {
 class _MyDrawerState extends State<MyDrawer> {
 
 
-  UserInfo userInfo;
+  UserInfoData userInfo;
   AuthUser _user;
   var res, index;
   AuthUserAttribute nameAttribute;

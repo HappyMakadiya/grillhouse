@@ -1,12 +1,18 @@
-import 'dart:math';
+import 'dart:developer';
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:grillhouse/Screens/Registration/login_screen.dart';
+import 'package:grillhouse/Screens/cart_model.dart';
+import 'package:grillhouse/Screens/navbar.dart';
 import 'package:grillhouse/Utils/route_generator.dart';
-import 'Screens/home_screen.dart';
+import 'package:grillhouse/models/ModelProvider.dart';
+import 'package:progress_dialog/progress_dialog.dart';
+import 'package:provider/provider.dart';
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'amplifyconfiguration.dart';
 
 void main() {
@@ -31,56 +37,71 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _configureAmplify() async {
-    try {
       AmplifyAuthCognito authPlugin = AmplifyAuthCognito();
-      Amplify.addPlugins([authPlugin]);
-      await Amplify.configure(amplifyconfig);
-    } catch (e) {
+      AmplifyDataStore dataStorePlugin = AmplifyDataStore(modelProvider: ModelProvider.instance);
+      Amplify.addPlugin(authPlugin);
+      Amplify.addPlugin(dataStorePlugin);
+      log("Amplify Config", name: "All set and ready to go!");
+      try {
+        await Amplify.configure(amplifyconfig);
+      } catch (e) {
       print(e);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        fontFamily: 'Open Sans',
-        primaryColor: Color(0xfffe724c),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<CartModel>(
+          create: (_) => CartModel(),
+        )
+      ],
+      child: MaterialApp(
+        theme: ThemeData(
+          fontFamily: 'Open Sans',
+          primaryColor: Color(0xffffb525),
+        ),
+        debugShowCheckedModeBanner: false,
+        onGenerateRoute: RouteGenerator.generateRoute,
       ),
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }
 
-class UserState extends StatefulWidget {
+
+class CheckUserState extends StatefulWidget {
   @override
-  _UserStateState createState() => _UserStateState();
+  _CheckUserStateState createState() => _CheckUserStateState();
 }
 
-class _UserStateState extends State<UserState> {
-
-  bool _isLoggedIn = false;
-
+class _CheckUserStateState extends State<CheckUserState> {
+  ProgressDialog pr;
   @override
   void initState() {
     super.initState();
-    autoLogIn();
-  }
-
-  void autoLogIn() async {
-    await Amplify.Auth.getCurrentUser().then((value) => {
-        _isLoggedIn = true
-      }
-    );
+    pr = ProgressDialog(context,type: ProgressDialogType.Normal);
+    pr.style(progressWidget: CupertinoActivityIndicator());
+    pr.show();
   }
   @override
   Widget build(BuildContext context) {
-    if(_isLoggedIn){
-      return HomeScreen();
-    } else{
-      return LoginScreen();
-    }
+    return StreamBuilder<AuthUser>(
+        stream: Amplify.Auth.getCurrentUser().asStream(),
+        builder: (BuildContext context, AsyncSnapshot<AuthUser> snapshot) {
+          if (snapshot.data == null) {
+            pr.hide();
+            return LoginScreen();
+          } else if (snapshot.data != null) {
+            pr.hide();
+            return NavBar();
+          }else{
+            pr.hide();
+            return Text('Error: ${snapshot.error}');
+          }
+        },
+    );
   }
 }
+
 

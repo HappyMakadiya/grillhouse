@@ -1,10 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:grillhouse/Screens/Registration/email_verification_screen.dart';
 import 'package:grillhouse/Screens/Registration/login_screen.dart';
 import 'package:grillhouse/Screens/Registration/signup_screen.dart';
 import 'package:grillhouse/Screens/home_screen.dart';
+import 'package:grillhouse/Screens/navbar.dart';
 import 'package:grillhouse/Screens/user_info.dart';
 import 'package:grillhouse/main.dart';
 
@@ -15,15 +14,17 @@ class RouteGenerator{
 
     switch(settings.name){
       case '/':
-        return MaterialPageRoute(builder: (_) => UserState());
+        return MaterialPageRoute(builder: (_) => CheckUserState());
       case '/login_screen':
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case '/signup_screen':
         return MaterialPageRoute(builder: (_) => SignUpScreen());
       case '/home_screen':
           return MaterialPageRoute(builder: (_) => HomeScreen());
+      case '/navbar':
+        return MaterialPageRoute(builder: (_) => NavBar());
       case '/verify_email':
-        if(args is UserInfo){
+        if(args is UserInfoData){
           return MaterialPageRoute(builder: (_) => EmailVerificationScreen(userinfo: args));
         }
         else{

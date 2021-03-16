@@ -4,12 +4,11 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_core/amplify_core.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../home_screen.dart';
 import '../user_info.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
-  final UserInfo userinfo;
+  final UserInfoData userinfo;
 
   EmailVerificationScreen({
     @required this.userinfo,

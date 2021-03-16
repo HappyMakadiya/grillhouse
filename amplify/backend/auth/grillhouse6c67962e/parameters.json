@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "grillhouse921aca21_identitypool_921aca21",
+    "identityPoolName": "grillhouse6c67962e_identitypool_6c67962e",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "grillh921aca21",
-    "userPoolName": "grillhouse921aca21_userpool_921aca21",
+    "resourceNameTruncated": "grillh6c67962e",
+    "userPoolName": "grillhouse6c67962e_userpool_6c67962e",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -20,7 +20,7 @@
     "requiredAttributes": [
         "email"
     ],
-    "userpoolClientGenerateSecret": true,
+    "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [
         "email"
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "grillh921aca21_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "grillh6c67962e_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "921aca21",
-    "resourceName": "grillhouse921aca21",
+    "sharedId": "6c67962e",
+    "resourceName": "grillhouse6c67962e",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -45,21 +45,9 @@
             "Arn"
         ]
     },
-    "useDefault": "manual",
-    "usernameAttributes": [
-        "email"
-    ],
+    "useDefault": "default",
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
-    "dependsOn": [],
-    "thirdPartyAuth": false,
-    "userPoolGroups": false,
-    "adminQueries": true,
-    "triggers": "{}",
-    "hostedUI": false,
-    "parentStack": {
-        "Ref": "AWS::StackId"
-    },
-    "permissions": []
+    "dependsOn": []
 }

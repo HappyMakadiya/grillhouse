@@ -1,8 +1,8 @@
-class UserInfo{
+class UserInfoData{
   final String email;
   final String password;
   final String name;
 
-  UserInfo({this.email, this.password, this.name});
+  UserInfoData({this.email, this.password, this.name});
 
 }

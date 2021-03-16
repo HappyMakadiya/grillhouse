@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isHidden = true;
   bool _isSignin = false;
-  UserInfo _userInfo;
+  UserInfoData _userInfo;
 
   Future<void> _loginButtonOnPressed(BuildContext context) async {
     if (_formKey.currentState.validate()) {
@@ -35,10 +35,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final email = _emailController.text;
       final password = _passwordController.text;
-      _userInfo = UserInfo(email: email, password: password);
+      _userInfo = UserInfoData(email: email, password: password);
       await pr.show();
       try {
-        await Amplify.Auth.signOut();
         var signInResult = await Amplify.Auth.signIn(
           username: email,
           password: password,
@@ -46,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
         _isSignin = signInResult.isSignedIn;
         if (_isSignin) {
           await pr.hide();
-          Navigator.of(context).pushReplacementNamed('/home_screen');
+          Navigator.of(context).pushReplacementNamed('/navbar');
         }
       }on UserNotFoundException catch(e){
         await pr.hide();
@@ -93,7 +92,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     var scrWidth = MediaQuery.of(context).size.width;
     var scrHeight = MediaQuery.of(context).size.height;
     return SafeArea(
@@ -104,13 +102,29 @@ class _LoginScreenState extends State<LoginScreen> {
             key: _formKey,
             child: Stack(
                 children: [
+                  ClipPath(
+                    clipper: OuterClipperPart(),
+                    child: Container(
+                      color: Theme.of(context).primaryColor,
+                      width: scrWidth,
+                      height: scrHeight,
+                    ),
+                  ),
+                  ClipPath(
+                    clipper: InnerClipperPart(),
+                    child: Container(
+                      color: Color(0xffb37805),
+                      width: scrWidth,
+                      height: scrHeight,
+                    ),
+                  ),
                   Column(
                     children: [
                       // Image(
                       //   image: AssetImage('assets/images/chef.png'),
                       // ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 40, top: 100),
+                        padding: const EdgeInsets.only(left: 40, top: 220),
                         child: Align(
                           alignment: Alignment.topLeft,
                           child: Text(
@@ -123,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(40,100,40,0),
+                        padding: const EdgeInsets.fromLTRB(40,70,40,0),
                         child: TextFormField(
                           keyboardType: TextInputType.emailAddress,
                           cursorColor: Theme.of(context).primaryColor,
@@ -169,13 +183,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         onPressed: () => _loginButtonOnPressed(context),
                         minWidth: 130,
+                        height: 50,
                         shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(5.0),
                         ),
                         color: Theme.of(context).primaryColor,
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.all(20.0),
                         child: InkWell(
                           onTap: () => _signUpButtonOnPressed(context),
                           child: new Text("Don't have account? Sign up"),
@@ -190,5 +205,43 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+}
+
+
+class OuterClipperPart extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.moveTo(0, size.height / 4);
+    path.lineTo(0, 0);
+    path.lineTo(size.width, 0);
+    path.lineTo(size.width, size.height * 0.15);
+    path.quadraticBezierTo(
+        size.width * 0.4, size.height * 0.3, 0, size.height * 0.2);
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return true;
+  }
+}
+
+class InnerClipperPart extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.moveTo(size.width * 0.7, 0);
+    path.lineTo(size.width, 0);
+    path.lineTo(size.width, size.height * 0.25);
+    path.quadraticBezierTo(
+        size.width * 0.8, size.height * 0.11, size.width * 0.4, 0);
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return true;
   }
 }
