@@ -24,12 +24,12 @@ import 'package:flutter/foundation.dart';
 class Food extends Model {
   static const classType = const _FoodModelType();
   final String id;
-  final String food_name;
-  final String food_price;
+  final String orderID;
+  final Order order;
+  final String foodMenuItemID;
+  final FoodMenuItem foodMenuItem;
   final String food_quantity;
   final String total_price;
-  final Order order;
-  final String orderCartId;
 
   @override
   getInstanceType() => classType;
@@ -41,29 +41,29 @@ class Food extends Model {
 
   const Food._internal(
       {@required this.id,
-      @required this.food_name,
-      @required this.food_price,
+      @required this.orderID,
+      this.order,
+      @required this.foodMenuItemID,
+      this.foodMenuItem,
       @required this.food_quantity,
-      @required this.total_price,
-      @required this.order,
-      this.orderCartId});
+      @required this.total_price});
 
   factory Food(
       {String id,
-      @required String food_name,
-      @required String food_price,
+      @required String orderID,
+      Order order,
+      @required String foodMenuItemID,
+      FoodMenuItem foodMenuItem,
       @required String food_quantity,
-      @required String total_price,
-      @required Order order,
-      String orderCartId}) {
+      @required String total_price}) {
     return Food._internal(
         id: id == null ? UUID.getUUID() : id,
-        food_name: food_name,
-        food_price: food_price,
-        food_quantity: food_quantity,
-        total_price: total_price,
+        orderID: orderID,
         order: order,
-        orderCartId: orderCartId);
+        foodMenuItemID: foodMenuItemID,
+        foodMenuItem: foodMenuItem,
+        food_quantity: food_quantity,
+        total_price: total_price);
   }
 
   bool equals(Object other) {
@@ -75,12 +75,12 @@ class Food extends Model {
     if (identical(other, this)) return true;
     return other is Food &&
         id == other.id &&
-        food_name == other.food_name &&
-        food_price == other.food_price &&
-        food_quantity == other.food_quantity &&
-        total_price == other.total_price &&
+        orderID == other.orderID &&
         order == other.order &&
-        orderCartId == other.orderCartId;
+        foodMenuItemID == other.foodMenuItemID &&
+        foodMenuItem == other.foodMenuItem &&
+        food_quantity == other.food_quantity &&
+        total_price == other.total_price;
   }
 
   @override
@@ -92,12 +92,11 @@ class Food extends Model {
 
     buffer.write("Food {");
     buffer.write("id=" + "$id" + ", ");
-    buffer.write("food_name=" + "$food_name" + ", ");
-    buffer.write("food_price=" + "$food_price" + ", ");
-    buffer.write("food_quantity=" + "$food_quantity" + ", ");
-    buffer.write("total_price=" + "$total_price" + ", ");
+    buffer.write("orderID=" + "$orderID" + ", ");
     buffer.write("order=" + (order != null ? order.toString() : "null") + ", ");
-    buffer.write("orderCartId=" + "$orderCartId");
+    buffer.write("foodMenuItemID=" + "$foodMenuItemID" + ", ");
+    buffer.write("food_quantity=" + "$food_quantity" + ", ");
+    buffer.write("total_price=" + "$total_price");
     buffer.write("}");
 
     return buffer.toString();
@@ -105,54 +104,61 @@ class Food extends Model {
 
   Food copyWith(
       {String id,
-      String food_name,
-      String food_price,
-      String food_quantity,
-      String total_price,
+      String orderID,
       Order order,
-      String orderCartId}) {
+      String foodMenuItemID,
+      FoodMenuItem foodMenuItem,
+      String food_quantity,
+      String total_price}) {
     return Food(
         id: id ?? this.id,
-        food_name: food_name ?? this.food_name,
-        food_price: food_price ?? this.food_price,
-        food_quantity: food_quantity ?? this.food_quantity,
-        total_price: total_price ?? this.total_price,
+        orderID: orderID ?? this.orderID,
         order: order ?? this.order,
-        orderCartId: orderCartId ?? this.orderCartId);
+        foodMenuItemID: foodMenuItemID ?? this.foodMenuItemID,
+        foodMenuItem: foodMenuItem ?? this.foodMenuItem,
+        food_quantity: food_quantity ?? this.food_quantity,
+        total_price: total_price ?? this.total_price);
   }
 
   Food.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        food_name = json['food_name'],
-        food_price = json['food_price'],
-        food_quantity = json['food_quantity'],
-        total_price = json['total_price'],
+        orderID = json['orderID'],
         order = json['order'] != null
             ? Order.fromJson(new Map<String, dynamic>.from(json['order']))
             : null,
-        orderCartId = json['orderCartId'];
+        foodMenuItemID = json['foodMenuItemID'],
+        foodMenuItem = json['foodMenuItem'] != null
+            ? FoodMenuItem.fromJson(
+                new Map<String, dynamic>.from(json['foodMenuItem']))
+            : null,
+        food_quantity = json['food_quantity'],
+        total_price = json['total_price'];
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'food_name': food_name,
-        'food_price': food_price,
-        'food_quantity': food_quantity,
-        'total_price': total_price,
+        'orderID': orderID,
         'order': order?.toJson(),
-        'orderCartId': orderCartId
+        'foodMenuItemID': foodMenuItemID,
+        'foodMenuItem': foodMenuItem?.toJson(),
+        'food_quantity': food_quantity,
+        'total_price': total_price
       };
 
   static final QueryField ID = QueryField(fieldName: "food.id");
-  static final QueryField FOOD_NAME = QueryField(fieldName: "food_name");
-  static final QueryField FOOD_PRICE = QueryField(fieldName: "food_price");
-  static final QueryField FOOD_QUANTITY =
-      QueryField(fieldName: "food_quantity");
-  static final QueryField TOTAL_PRICE = QueryField(fieldName: "total_price");
+  static final QueryField ORDERID = QueryField(fieldName: "orderID");
   static final QueryField ORDER = QueryField(
       fieldName: "order",
       fieldType: ModelFieldType(ModelFieldTypeEnum.model,
           ofModelName: (Order).toString()));
-  static final QueryField ORDERCARTID = QueryField(fieldName: "orderCartId");
+  static final QueryField FOODMENUITEMID =
+      QueryField(fieldName: "foodMenuItemID");
+  static final QueryField FOODMENUITEM = QueryField(
+      fieldName: "foodMenuItem",
+      fieldType: ModelFieldType(ModelFieldTypeEnum.model,
+          ofModelName: (FoodMenuItem).toString()));
+  static final QueryField FOOD_QUANTITY =
+      QueryField(fieldName: "food_quantity");
+  static final QueryField TOTAL_PRICE = QueryField(fieldName: "total_price");
   static var schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Food";
@@ -161,14 +167,26 @@ class Food extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
 
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        key: Food.FOOD_NAME,
+        key: Food.ORDERID,
         isRequired: true,
         ofType: ModelFieldType(ModelFieldTypeEnum.string)));
 
+    modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
+        key: Food.ORDER,
+        isRequired: false,
+        targetName: "foodOrderId",
+        ofModelName: (Order).toString()));
+
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        key: Food.FOOD_PRICE,
+        key: Food.FOODMENUITEMID,
         isRequired: true,
         ofType: ModelFieldType(ModelFieldTypeEnum.string)));
+
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasOne(
+        key: Food.FOODMENUITEM,
+        isRequired: false,
+        ofModelName: (FoodMenuItem).toString(),
+        associatedKey: FoodMenuItem.ID));
 
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         key: Food.FOOD_QUANTITY,
@@ -178,17 +196,6 @@ class Food extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         key: Food.TOTAL_PRICE,
         isRequired: true,
-        ofType: ModelFieldType(ModelFieldTypeEnum.string)));
-
-    modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
-        key: Food.ORDER,
-        isRequired: true,
-        targetName: "foodOrderId",
-        ofModelName: (Order).toString()));
-
-    modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        key: Food.ORDERCARTID,
-        isRequired: false,
         ofType: ModelFieldType(ModelFieldTypeEnum.string)));
   });
 }

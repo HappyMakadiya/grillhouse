@@ -10,6 +10,11 @@
       "StackName": "amplify-grillhouse-dev-103528",
       "StackId": "arn:aws:cloudformation:ap-south-1:399297844740:stack/amplify-grillhouse-dev-103528/e414e360-92a7-11eb-9e64-06e396848654",
       "AmplifyAppId": "d2xes7ugioom78"
+    },
+    "categories": {
+      "auth": {
+        "grillhouse6951c9b0": {}
+      }
     }
   }
 }

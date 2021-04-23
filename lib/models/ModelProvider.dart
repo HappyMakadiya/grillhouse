@@ -16,24 +16,58 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
-import 'Users.dart';
+import 'Food.dart';
+import 'FoodMenuItem.dart';
+import 'Order.dart';
+import 'Todo.dart';
+import 'User.dart';
 
-export 'Users.dart';
+export 'Food.dart';
+export 'FoodMenuItem.dart';
+export 'Order.dart';
+export 'Todo.dart';
+export 'User.dart';
 
 class ModelProvider implements ModelProviderInterface {
   @override
-  String version = "0424e7d9ee89d050adf5197495524076";
+  String version = "7e5fe9725df76cc7693f3a1d5e012f9b";
   @override
-  List<ModelSchema> modelSchemas = [Users.schema];
+  List<ModelSchema> modelSchemas = [
+    Food.schema,
+    FoodMenuItem.schema,
+    Order.schema,
+    Todo.schema,
+    User.schema
+  ];
   static final ModelProvider _instance = ModelProvider();
 
   static ModelProvider get instance => _instance;
 
   ModelType getModelTypeByModelName(String modelName) {
     switch (modelName) {
-      case "Users":
+      case "Food":
         {
-          return Users.classType;
+          return Food.classType;
+        }
+        break;
+      case "FoodMenuItem":
+        {
+          return FoodMenuItem.classType;
+        }
+        break;
+      case "Order":
+        {
+          return Order.classType;
+        }
+        break;
+      case "Todo":
+        {
+          return Todo.classType;
+        }
+        break;
+      case "User":
+        {
+          return User.classType;
         }
         break;
       default:

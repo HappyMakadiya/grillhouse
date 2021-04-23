@@ -21,7 +21,7 @@ import 'package:flutter/foundation.dart';
 /** This is an auto generated class representing the Todo type in your schema. */
 @immutable
 class Todo extends Model {
-  static const classType = const TodoType();
+  static const classType = const _TodoModelType();
   final String id;
   final String name;
   final String description;
@@ -110,8 +110,8 @@ class Todo extends Model {
   });
 }
 
-class TodoType extends ModelType<Todo> {
-  const TodoType();
+class _TodoModelType extends ModelType<Todo> {
+  const _TodoModelType();
 
   @override
   Todo fromJson(Map<String, dynamic> jsonData) {

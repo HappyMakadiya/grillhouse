@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,11 +9,12 @@ import 'package:grillhouse/Screens/Registration/login_screen.dart';
 import 'package:grillhouse/Screens/cart_model.dart';
 import 'package:grillhouse/Screens/navbar.dart';
 import 'package:grillhouse/Utils/route_generator.dart';
+import 'package:grillhouse/models/ModelProvider.dart';
+import 'package:grillhouse/models/Todo.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
 import 'amplifyconfiguration.dart';
-import 'package:grillhouse/models/ModelProvider.dart';
 
 void main() {
   runApp(MyApp());
@@ -30,6 +30,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool isAmplifyConfigured = false;
   @override
   initState() {
     super.initState();
@@ -37,19 +38,20 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _configureAmplify() async {
-    await Amplify.addPlugin(AmplifyAuthCognito());
-    await Amplify.addPlugin(AmplifyAPI());
-    await Amplify.addPlugin(AmplifyDataStore(modelProvider: ModelProvider.instance));
-
-    try{
+    try {
+      Amplify.addPlugins([
+        AmplifyAuthCognito(),
+        AmplifyAPI(),
+        AmplifyDataStore(modelProvider: ModelProvider.instance)
+      ]);
       await Amplify.configure(amplifyconfig);
-    }on AmplifyException catch(e){
-    }catch(e){
+    } on AmplifyAlreadyConfiguredException catch (_) {
+      print("Amplify Alerady Configure");
+    } on AmplifyException catch (_) {
+      print("Amplify Exception");
+    } catch (e) {
       print(e);
     }
-    final item = Todo(name: "test", id: "1", description:"Text");
-    await Amplify.DataStore.save(item);
-
   }
 
   @override
@@ -79,30 +81,41 @@ class CheckUserState extends StatefulWidget {
 
 class _CheckUserStateState extends State<CheckUserState> {
   ProgressDialog pr;
+  bool isUserSignedIn = false;
   @override
   void initState() {
     super.initState();
-    pr = ProgressDialog(context, type: ProgressDialogType.Normal);
-    pr.style(progressWidget: CupertinoActivityIndicator());
-    pr.show();
+
+
+    checkUserSignedIn();
+  }
+
+  Future<void> checkUserSignedIn() async {
+    try {
+      CognitoAuthSession res = await Amplify.Auth.fetchAuthSession();
+      setState(() {
+        isUserSignedIn = res.isSignedIn;
+      });
+
+      print(isUserSignedIn);
+    } on AuthException catch (e) {
+      print(e.message);
+    }
+    if (isUserSignedIn) {
+      Navigator.of(context).pushReplacementNamed('/navbar');
+    } else {
+      Navigator.of(context).pushReplacementNamed('/login_screen');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<AuthUser>(
-      stream: Amplify.Auth.getCurrentUser().asStream(),
-      builder: (BuildContext context, AsyncSnapshot<AuthUser> snapshot) {
-        if (snapshot.data == null) {
-          pr.hide();
-          return LoginScreen();
-        } else if (snapshot.data != null) {
-          pr.hide();
-          return NavBar();
-        } else {
-          pr.hide();
-          return Text('Error: ${snapshot.error}');
-        }
-      },
+    return Scaffold(
+      body: Center(
+        child: CupertinoActivityIndicator(
+          radius: 40,
+        ),
+      ),
     );
   }
 }

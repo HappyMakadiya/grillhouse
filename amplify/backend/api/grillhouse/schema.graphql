@@ -3,3 +3,38 @@ type Todo @model {
   name: String!
   description: String
 }
+
+type User @model @key(fields: ["email"]){
+  id: ID!
+  cognito_user_id: String
+  name: String!
+  email: String!
+  phonr_number: String
+  orders: [Order] @connection(name: "userHavingManyOrder")
+}
+
+type Order @model {
+  id: ID!
+  dayeTime: String!
+  userID: ID
+  user: User @connection(name: "userHavingManyOrder")
+  cart: [Food] @connection(name: "orderHavingManyFood")
+  totalAmount: String
+  status: String
+}
+
+type Food @model {
+  id: ID!
+  orderID: ID!
+  order: Order @connection(name: "orderHavingManyFood")
+  foodMenuItemID: ID!
+  foodMenuItem: FoodMenuItem @connection(fields: ["foodMenuItemID"])
+  food_quantity: String!
+  total_price: String!
+}
+
+type FoodMenuItem @model{
+  id: ID!
+  food_name: String!
+  food_price: String!
+}

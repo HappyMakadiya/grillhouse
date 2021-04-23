@@ -25,11 +25,12 @@ import 'package:flutter/foundation.dart';
 class Order extends Model {
   static const classType = const _OrderModelType();
   final String id;
-  final String user_id;
-  final String createdAt;
+  final String dayeTime;
+  final String userID;
   final User user;
   final List<Food> cart;
-  final String userOrdersId;
+  final String totalAmount;
+  final String status;
 
   @override
   getInstanceType() => classType;
@@ -41,26 +42,29 @@ class Order extends Model {
 
   const Order._internal(
       {@required this.id,
-      @required this.user_id,
-      this.createdAt,
-      @required this.user,
-      @required this.cart,
-      this.userOrdersId});
+      @required this.dayeTime,
+      this.userID,
+      this.user,
+      this.cart,
+      this.totalAmount,
+      this.status});
 
   factory Order(
       {String id,
-      @required String user_id,
-      String createdAt,
-      @required User user,
-      @required List<Food> cart,
-      String userOrdersId}) {
+      @required String dayeTime,
+      String userID,
+      User user,
+      List<Food> cart,
+      String totalAmount,
+      String status}) {
     return Order._internal(
         id: id == null ? UUID.getUUID() : id,
-        user_id: user_id,
-        createdAt: createdAt,
+        dayeTime: dayeTime,
+        userID: userID,
         user: user,
         cart: cart != null ? List.unmodifiable(cart) : cart,
-        userOrdersId: userOrdersId);
+        totalAmount: totalAmount,
+        status: status);
   }
 
   bool equals(Object other) {
@@ -72,11 +76,12 @@ class Order extends Model {
     if (identical(other, this)) return true;
     return other is Order &&
         id == other.id &&
-        user_id == other.user_id &&
-        createdAt == other.createdAt &&
+        dayeTime == other.dayeTime &&
+        userID == other.userID &&
         user == other.user &&
         DeepCollectionEquality().equals(cart, other.cart) &&
-        userOrdersId == other.userOrdersId;
+        totalAmount == other.totalAmount &&
+        status == other.status;
   }
 
   @override
@@ -88,10 +93,11 @@ class Order extends Model {
 
     buffer.write("Order {");
     buffer.write("id=" + "$id" + ", ");
-    buffer.write("user_id=" + "$user_id" + ", ");
-    buffer.write("createdAt=" + "$createdAt" + ", ");
+    buffer.write("dayeTime=" + "$dayeTime" + ", ");
+    buffer.write("userID=" + "$userID" + ", ");
     buffer.write("user=" + (user != null ? user.toString() : "null") + ", ");
-    buffer.write("userOrdersId=" + "$userOrdersId");
+    buffer.write("totalAmount=" + "$totalAmount" + ", ");
+    buffer.write("status=" + "$status");
     buffer.write("}");
 
     return buffer.toString();
@@ -99,24 +105,26 @@ class Order extends Model {
 
   Order copyWith(
       {String id,
-      String user_id,
-      String createdAt,
+      String dayeTime,
+      String userID,
       User user,
       List<Food> cart,
-      String userOrdersId}) {
+      String totalAmount,
+      String status}) {
     return Order(
         id: id ?? this.id,
-        user_id: user_id ?? this.user_id,
-        createdAt: createdAt ?? this.createdAt,
+        dayeTime: dayeTime ?? this.dayeTime,
+        userID: userID ?? this.userID,
         user: user ?? this.user,
         cart: cart ?? this.cart,
-        userOrdersId: userOrdersId ?? this.userOrdersId);
+        totalAmount: totalAmount ?? this.totalAmount,
+        status: status ?? this.status);
   }
 
   Order.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        user_id = json['user_id'],
-        createdAt = json['createdAt'],
+        dayeTime = json['dayeTime'],
+        userID = json['userID'],
         user = json['user'] != null
             ? User.fromJson(new Map<String, dynamic>.from(json['user']))
             : null,
@@ -125,20 +133,22 @@ class Order extends Model {
                 .map((e) => Food.fromJson(new Map<String, dynamic>.from(e)))
                 .toList()
             : null,
-        userOrdersId = json['userOrdersId'];
+        totalAmount = json['totalAmount'],
+        status = json['status'];
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'user_id': user_id,
-        'createdAt': createdAt,
+        'dayeTime': dayeTime,
+        'userID': userID,
         'user': user?.toJson(),
         'cart': cart?.map((e) => e?.toJson())?.toList(),
-        'userOrdersId': userOrdersId
+        'totalAmount': totalAmount,
+        'status': status
       };
 
   static final QueryField ID = QueryField(fieldName: "order.id");
-  static final QueryField USER_ID = QueryField(fieldName: "user_id");
-  static final QueryField CREATEDAT = QueryField(fieldName: "createdAt");
+  static final QueryField DAYETIME = QueryField(fieldName: "dayeTime");
+  static final QueryField USERID = QueryField(fieldName: "userID");
   static final QueryField USER = QueryField(
       fieldName: "user",
       fieldType: ModelFieldType(ModelFieldTypeEnum.model,
@@ -147,7 +157,8 @@ class Order extends Model {
       fieldName: "cart",
       fieldType: ModelFieldType(ModelFieldTypeEnum.model,
           ofModelName: (Food).toString()));
-  static final QueryField USERORDERSID = QueryField(fieldName: "userOrdersId");
+  static final QueryField TOTALAMOUNT = QueryField(fieldName: "totalAmount");
+  static final QueryField STATUS = QueryField(fieldName: "status");
   static var schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Order";
@@ -156,18 +167,18 @@ class Order extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
 
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        key: Order.USER_ID,
+        key: Order.DAYETIME,
         isRequired: true,
         ofType: ModelFieldType(ModelFieldTypeEnum.string)));
 
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        key: Order.CREATEDAT,
+        key: Order.USERID,
         isRequired: false,
         ofType: ModelFieldType(ModelFieldTypeEnum.string)));
 
     modelSchemaDefinition.addField(ModelFieldDefinition.belongsTo(
         key: Order.USER,
-        isRequired: true,
+        isRequired: false,
         targetName: "orderUserId",
         ofModelName: (User).toString()));
 
@@ -175,10 +186,15 @@ class Order extends Model {
         key: Order.CART,
         isRequired: false,
         ofModelName: (Food).toString(),
-        associatedKey: Food.ORDERCARTID));
+        associatedKey: Food.ORDER));
 
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        key: Order.USERORDERSID,
+        key: Order.TOTALAMOUNT,
+        isRequired: false,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)));
+
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        key: Order.STATUS,
         isRequired: false,
         ofType: ModelFieldType(ModelFieldTypeEnum.string)));
   });

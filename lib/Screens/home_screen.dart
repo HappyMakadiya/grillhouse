@@ -6,6 +6,7 @@ import 'package:flutter/painting.dart';
 import 'package:grillhouse/Screens/food_detail_screen.dart';
 import 'package:grillhouse/Utils/config.dart';
 import 'package:grillhouse/Utils/food_info.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -16,24 +17,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  AuthUser _user;
-  var res;
-  String name;
-  List<Food> foodList = mainFoodList;
+
+  String userName = " ";
+  List<FoodItem> foodList = mainFoodList;
 
   double xOffset = 0;
   double yOffset = 0;
   double scaleFactor = 0;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Amplify.Auth.getCurrentUser().then((user) {
-      setState(() {
-        _user = user;
-      });
-    }).catchError((e) {
-      print((e as AuthException).message);
+    getData();
+  }
+
+  Future<void> getData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userName = prefs.getString('userName');
     });
   }
 
@@ -63,28 +63,30 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(
                           width: 5,
                         ),
-                        StreamBuilder<List<AuthUserAttribute>>(
-                            stream:
-                                Amplify.Auth.fetchUserAttributes().asStream(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<List<AuthUserAttribute>>
-                                    snapshot) {
-                              if (snapshot.hasError) {
-                                return Text('Error: ${snapshot.error}');
-                              } else if (snapshot.hasData) {
-                                var index = snapshot.data.indexWhere(
-                                    (element) =>
-                                        element.userAttributeKey == 'name');
-                                var nameAttribute =
-                                    snapshot.data.elementAt(index);
-                                return Text(
-                                  nameAttribute.value,
-                                  style: TextStyle(
-                                      fontSize: 26, color: Colors.black87),
-                                );
-                              }
-                              return CircularProgressIndicator();
-                            }),
+                        Text(
+                          userName,
+                          style: TextStyle(fontSize: 26, color: Colors.black87),
+                        )
+                        // StreamBuilder<List<AuthUserAttribute>>(
+                        //     stream:
+                        //         Amplify.Auth.fetchUserAttributes().asStream(),
+                        //     builder: (BuildContext context,
+                        //         AsyncSnapshot<List<AuthUserAttribute>>
+                        //             snapshot) {
+                        //       if (snapshot.hasError) {
+                        //         return Text('Error: ${snapshot.error}');
+                        //       } else if (snapshot.hasData) {
+                        //         var index = snapshot.data.indexWhere(
+                        //             (element) => element.userAttributeKey == 'name');
+                        //         var nameAttribute = snapshot.data.elementAt(index);
+                        //         return Text(
+                        //           nameAttribute.value,
+                        //           style: TextStyle(
+                        //               fontSize: 26, color: Colors.black87),
+                        //         );
+                        //       }
+                        //       return CircularProgressIndicator();
+                        //     }),
                       ],
                     ),
                     CircleAvatar(
@@ -170,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          FoodDetail(index)),
+                                                          FoodDetailScreen(index)),
                                                 );
                                               },
                                               child: Icon(

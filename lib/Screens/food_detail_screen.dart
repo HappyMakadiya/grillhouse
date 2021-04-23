@@ -7,15 +7,15 @@ import 'package:grillhouse/Utils/config.dart';
 import 'package:grillhouse/Utils/food_info.dart';
 import 'package:provider/provider.dart';
 
-class FoodDetail extends StatefulWidget {
-  int index;
-  FoodDetail(this.index);
+class FoodDetailScreen extends StatefulWidget {
+  final int index;
+  FoodDetailScreen(this.index);
   @override
-  _FoodDetailState createState() => _FoodDetailState();
+  _FoodDetailScreenState createState() => _FoodDetailScreenState();
 }
 
-class _FoodDetailState extends State<FoodDetail> {
-  Food food;
+class _FoodDetailScreenState extends State<FoodDetailScreen> {
+  FoodItem food;
   int quantity=0;
   @override
   void initState() {
@@ -71,7 +71,6 @@ class _FoodDetailState extends State<FoodDetail> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(30, 30, 30, 20),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InkWell(
                         onTap: (){
@@ -87,15 +86,7 @@ class _FoodDetailState extends State<FoodDetail> {
                           radius: 26,
                         ),
                       ),
-                      CircleAvatar(
-                        child: Icon(
-                          CupertinoIcons.heart,
-                          size: 26,
-                          color: Colors.black54,
-                        ),
-                        backgroundColor: Colors.white,
-                        radius: 26,
-                      )
+                      
                     ],
                   ),
                 ),
@@ -107,7 +98,6 @@ class _FoodDetailState extends State<FoodDetail> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 26),
                   padding: EdgeInsets.fromLTRB(40,20,40,20),
                   height: 350,
                   decoration: BoxDecoration(
@@ -131,7 +121,7 @@ class _FoodDetailState extends State<FoodDetail> {
                           ),
                           Container(
                             child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              // crossAxisAlignment: CrossAxisAlignment.baseline,
                               children: [
                                 Text(
                                   '\u20B9',
@@ -154,8 +144,7 @@ class _FoodDetailState extends State<FoodDetail> {
                         ],
                       ),
                       SizedBox(height: 40),
-                      Text(
-                        "Details",
+                      Text("Details",
                         style: TextStyle(
                             fontSize: 22,
                           fontWeight: FontWeight.bold
@@ -163,13 +152,45 @@ class _FoodDetailState extends State<FoodDetail> {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        "jdhsgfhd shdgf jsdhgfj hdgsf shfgdsfhjs dshfjsd jdshfj jhsd ghgfhsdgf hsdfgjhs df",
+                        food.foodDetail.toString(),
                         textAlign: TextAlign.justify,
                         style: TextStyle(
                             fontSize: 16,
                             color: Colors.black38
                         ),
-                      )
+                      ),
+                      SizedBox(height: 20),
+                      Material(
+                        color: Colors.white,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(10),
+                          onTap: () {
+                            Navigator.of(context).pushReplacementNamed('/review_screen');
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Write Review",
+                                  style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.chevron_right_rounded,
+                                  size: 38,
+                                  color: Colors.grey[800],
+                                )
+                              ]
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+
                     ],
                   ),
                 ),

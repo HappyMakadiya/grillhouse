@@ -25,7 +25,7 @@ import 'package:flutter/foundation.dart';
 class User extends Model {
   static const classType = const _UserModelType();
   final String id;
-  final String user_id;
+  final String cognito_user_id;
   final String name;
   final String email;
   final String phonr_number;
@@ -41,7 +41,7 @@ class User extends Model {
 
   const User._internal(
       {@required this.id,
-      @required this.user_id,
+      this.cognito_user_id,
       @required this.name,
       @required this.email,
       this.phonr_number,
@@ -49,14 +49,14 @@ class User extends Model {
 
   factory User(
       {String id,
-      @required String user_id,
+      String cognito_user_id,
       @required String name,
       @required String email,
       String phonr_number,
       List<Order> orders}) {
     return User._internal(
         id: id == null ? UUID.getUUID() : id,
-        user_id: user_id,
+        cognito_user_id: cognito_user_id,
         name: name,
         email: email,
         phonr_number: phonr_number,
@@ -72,7 +72,7 @@ class User extends Model {
     if (identical(other, this)) return true;
     return other is User &&
         id == other.id &&
-        user_id == other.user_id &&
+        cognito_user_id == other.cognito_user_id &&
         name == other.name &&
         email == other.email &&
         phonr_number == other.phonr_number &&
@@ -88,7 +88,7 @@ class User extends Model {
 
     buffer.write("User {");
     buffer.write("id=" + "$id" + ", ");
-    buffer.write("user_id=" + "$user_id" + ", ");
+    buffer.write("cognito_user_id=" + "$cognito_user_id" + ", ");
     buffer.write("name=" + "$name" + ", ");
     buffer.write("email=" + "$email" + ", ");
     buffer.write("phonr_number=" + "$phonr_number");
@@ -99,14 +99,14 @@ class User extends Model {
 
   User copyWith(
       {String id,
-      String user_id,
+      String cognito_user_id,
       String name,
       String email,
       String phonr_number,
       List<Order> orders}) {
     return User(
         id: id ?? this.id,
-        user_id: user_id ?? this.user_id,
+        cognito_user_id: cognito_user_id ?? this.cognito_user_id,
         name: name ?? this.name,
         email: email ?? this.email,
         phonr_number: phonr_number ?? this.phonr_number,
@@ -115,7 +115,7 @@ class User extends Model {
 
   User.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        user_id = json['user_id'],
+        cognito_user_id = json['cognito_user_id'],
         name = json['name'],
         email = json['email'],
         phonr_number = json['phonr_number'],
@@ -127,7 +127,7 @@ class User extends Model {
 
   Map<String, dynamic> toJson() => {
         'id': id,
-        'user_id': user_id,
+        'cognito_user_id': cognito_user_id,
         'name': name,
         'email': email,
         'phonr_number': phonr_number,
@@ -135,7 +135,8 @@ class User extends Model {
       };
 
   static final QueryField ID = QueryField(fieldName: "user.id");
-  static final QueryField USER_ID = QueryField(fieldName: "user_id");
+  static final QueryField COGNITO_USER_ID =
+      QueryField(fieldName: "cognito_user_id");
   static final QueryField NAME = QueryField(fieldName: "name");
   static final QueryField EMAIL = QueryField(fieldName: "email");
   static final QueryField PHONR_NUMBER = QueryField(fieldName: "phonr_number");
@@ -151,8 +152,8 @@ class User extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
 
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
-        key: User.USER_ID,
-        isRequired: true,
+        key: User.COGNITO_USER_ID,
+        isRequired: false,
         ofType: ModelFieldType(ModelFieldTypeEnum.string)));
 
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
@@ -174,7 +175,7 @@ class User extends Model {
         key: User.ORDERS,
         isRequired: false,
         ofModelName: (Order).toString(),
-        associatedKey: Order.USERORDERSID));
+        associatedKey: Order.USER));
   });
 }
 

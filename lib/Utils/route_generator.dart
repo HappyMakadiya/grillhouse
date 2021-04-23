@@ -4,6 +4,11 @@ import 'package:grillhouse/Screens/Registration/login_screen.dart';
 import 'package:grillhouse/Screens/Registration/signup_screen.dart';
 import 'package:grillhouse/Screens/home_screen.dart';
 import 'package:grillhouse/Screens/navbar.dart';
+import 'package:grillhouse/Screens/profile/account_screen.dart';
+import 'package:grillhouse/Screens/profile/my_review_screen.dart';
+import 'package:grillhouse/Screens/profile/past_order_screen.dart';
+import 'package:grillhouse/Screens/profile/setting_screen.dart';
+import 'package:grillhouse/Screens/review.dart';
 import 'package:grillhouse/Screens/user_info.dart';
 import 'package:grillhouse/main.dart';
 
@@ -23,6 +28,16 @@ class RouteGenerator{
           return MaterialPageRoute(builder: (_) => HomeScreen());
       case '/navbar':
         return MaterialPageRoute(builder: (_) => NavBar());
+      case '/account_screen':
+        return MaterialPageRoute(builder: (_) => AccountScreen());
+      case '/past_order_screen':
+        return MaterialPageRoute(builder: (_) => PastOrderScreen());
+      case '/setting_screen':
+        return MaterialPageRoute(builder: (_) => SettingScreen());
+      case '/my_review_screen':
+        return MaterialPageRoute(builder: (_) => MyReviewScreen());
+      case '/review_screen':
+        return MaterialPageRoute(builder: (_) => ReviewScreen());
       case '/verify_email':
         if(args is UserInfoData){
           return MaterialPageRoute(builder: (_) => EmailVerificationScreen(userinfo: args));
@@ -31,15 +46,6 @@ class RouteGenerator{
           _errorRoute();
         }
         break;
-      // case '/cart_screen':
-      //   return MaterialPageRoute(builder: (_) => Cart());
-      // case '/subscription_screen':
-      //   return MaterialPageRoute(builder: (_) => Subscription());
-      // case '/userprofile_screen':
-      //   return MaterialPageRoute(builder: (_) => UserProfile());
-      // case '/setting_screen':
-      //   return MaterialPageRoute(builder: (_) => Setting());
-
       default:
         _errorRoute();
     }

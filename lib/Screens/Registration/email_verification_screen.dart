@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:amplify_core/amplify_core.dart';
+import 'package:grillhouse/models/ModelProvider.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import '../home_screen.dart';
 import '../user_info.dart';
@@ -23,7 +24,6 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   final TextEditingController _confirmationCodeController = TextEditingController();
   final _formKey1 = GlobalKey<FormState>();
 
-
   Future<void> _submitCode(BuildContext context) async {
     if (_formKey1.currentState.validate()) {
       final ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal);
@@ -38,6 +38,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
           confirmationCode: confirmationCode,
         );
         if (response.isSignUpComplete) {
+            User newUser = User(email: widget.userinfo.email, name: widget.userinfo.name);
+            await Amplify.DataStore.save(newUser);
             await pr.hide();
             Navigator.of(context).pushReplacementNamed('/login_screen');
         }

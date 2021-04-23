@@ -1,4 +1,5 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_datastore/amplify_datastore.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,18 +19,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-  TextEditingController();
+      TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   UserInfoData _userInfo;
   bool _isHiddenP = true;
   bool _isHiddenCP = true;
-
   Future<void> _createAccountOnPressed(BuildContext context) async {
     if (_formKey.currentState.validate()) {
-      final ProgressDialog pr = ProgressDialog(context,type: ProgressDialogType.Normal);
+      final ProgressDialog pr =
+          ProgressDialog(context, type: ProgressDialogType.Normal);
       pr.style(progressWidget: CupertinoActivityIndicator());
-
       final email = _emailController.text;
       final password = _passwordController.text;
       final name = _nameController.text;
@@ -39,21 +39,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
         var signupResult = await Amplify.Auth.signUp(
             username: email,
             password: password,
-            options: CognitoSignUpOptions(userAttributes: {'email': email, 'name':name}));
+            options: CognitoSignUpOptions(
+                userAttributes: {'email': email, 'name': name}));
         if (signupResult.isSignUpComplete) {
-          await pr.hide();
-          Navigator.of(context).pushNamed('/verify_email', arguments: _userInfo );
+          await pr.hide();                     
+          Navigator.of(context)
+              .pushNamed('/verify_email', arguments: _userInfo);
         }
       } on UsernameExistsException catch (e) {
         await pr.hide();
+        print(e);
         _scaffoldKey.currentState.showSnackBar(
           SnackBar(
             content: Text("User Already Exist! Try another email address."),
           ),
-
         );
-      } on AuthException catch(e){
+      } catch (e) {
         await pr.hide();
+        print(e);
         _scaffoldKey.currentState.showSnackBar(
           SnackBar(
             content: Text("Something Went Wrong! Try again later."),
@@ -63,7 +66,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  void _loginButtonOnPressed(BuildContext context)  {
+  void _loginButtonOnPressed(BuildContext context) {
     Navigator.of(context).pushNamed("/login_screen");
   }
 
@@ -130,13 +133,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         contentPadding:
-                        EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                            EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                         labelText: "Name",
                         border: OutlineInputBorder(),
                       ),
                       controller: _nameController,
                       validator: (value) =>
-                      value.isEmpty ? "Enter Your Name" : null,
+                          value.isEmpty ? "Enter Your Name" : null,
                     ),
                   ),
                   Padding(
@@ -147,13 +150,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
                         contentPadding:
-                        EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                            EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                         labelText: "Email",
                         border: OutlineInputBorder(),
                       ),
                       controller: _emailController,
                       validator: (value) =>
-                      !validateEmail(value) ? "Email is Invalid" : null,
+                          !validateEmail(value) ? "Email is Invalid" : null,
                     ),
                   ),
                   Padding(
@@ -163,7 +166,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       cursorColor: Theme.of(context).primaryColor,
                       decoration: InputDecoration(
                         contentPadding:
-                        EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                         border: OutlineInputBorder(),
                         labelText: 'New Password',
                         suffix: InkWell(
@@ -188,7 +191,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       cursorColor: Theme.of(context).primaryColor,
                       decoration: InputDecoration(
                         contentPadding:
-                        EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                            EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                         border: OutlineInputBorder(),
                         labelText: 'Confirm Password',
                         suffix: InkWell(
@@ -238,7 +241,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 }
-
 
 class OuterClipperPart extends CustomClipper<Path> {
   @override
