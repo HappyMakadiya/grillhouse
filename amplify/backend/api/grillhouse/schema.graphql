@@ -3,8 +3,3 @@ type Todo @model {
   name: String!
   description: String
 }
-type User @model {
-  id: ID!
-  name: String!
-  email: String
-}

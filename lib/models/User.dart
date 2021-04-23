@@ -15,16 +15,21 @@
 
 // ignore_for_file: public_member_api_docs
 
+import 'ModelProvider.dart';
 import 'package:amplify_datastore_plugin_interface/amplify_datastore_plugin_interface.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 /** This is an auto generated class representing the User type in your schema. */
 @immutable
 class User extends Model {
-  static const classType = const UserType();
+  static const classType = const _UserModelType();
   final String id;
+  final String user_id;
   final String name;
   final String email;
+  final String phonr_number;
+  final List<Order> orders;
 
   @override
   getInstanceType() => classType;
@@ -34,11 +39,28 @@ class User extends Model {
     return id;
   }
 
-  const User._internal({@required this.id, @required this.name, this.email});
+  const User._internal(
+      {@required this.id,
+      @required this.user_id,
+      @required this.name,
+      @required this.email,
+      this.phonr_number,
+      this.orders});
 
-  factory User({String id, @required String name, String email}) {
+  factory User(
+      {String id,
+      @required String user_id,
+      @required String name,
+      @required String email,
+      String phonr_number,
+      List<Order> orders}) {
     return User._internal(
-        id: id == null ? UUID.getUUID() : id, name: name, email: email);
+        id: id == null ? UUID.getUUID() : id,
+        user_id: user_id,
+        name: name,
+        email: email,
+        phonr_number: phonr_number,
+        orders: orders != null ? List.unmodifiable(orders) : orders);
   }
 
   bool equals(Object other) {
@@ -50,8 +72,11 @@ class User extends Model {
     if (identical(other, this)) return true;
     return other is User &&
         id == other.id &&
+        user_id == other.user_id &&
         name == other.name &&
-        email == other.email;
+        email == other.email &&
+        phonr_number == other.phonr_number &&
+        DeepCollectionEquality().equals(orders, other.orders);
   }
 
   @override
@@ -63,28 +88,61 @@ class User extends Model {
 
     buffer.write("User {");
     buffer.write("id=" + "$id" + ", ");
+    buffer.write("user_id=" + "$user_id" + ", ");
     buffer.write("name=" + "$name" + ", ");
-    buffer.write("email=" + "$email");
+    buffer.write("email=" + "$email" + ", ");
+    buffer.write("phonr_number=" + "$phonr_number");
     buffer.write("}");
 
     return buffer.toString();
   }
 
-  User copyWith({String id, String name, String email}) {
+  User copyWith(
+      {String id,
+      String user_id,
+      String name,
+      String email,
+      String phonr_number,
+      List<Order> orders}) {
     return User(
-        id: id ?? this.id, name: name ?? this.name, email: email ?? this.email);
+        id: id ?? this.id,
+        user_id: user_id ?? this.user_id,
+        name: name ?? this.name,
+        email: email ?? this.email,
+        phonr_number: phonr_number ?? this.phonr_number,
+        orders: orders ?? this.orders);
   }
 
   User.fromJson(Map<String, dynamic> json)
       : id = json['id'],
+        user_id = json['user_id'],
         name = json['name'],
-        email = json['email'];
+        email = json['email'],
+        phonr_number = json['phonr_number'],
+        orders = json['orders'] is List
+            ? (json['orders'] as List)
+                .map((e) => Order.fromJson(new Map<String, dynamic>.from(e)))
+                .toList()
+            : null;
 
-  Map<String, dynamic> toJson() => {'id': id, 'name': name, 'email': email};
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'user_id': user_id,
+        'name': name,
+        'email': email,
+        'phonr_number': phonr_number,
+        'orders': orders?.map((e) => e?.toJson())?.toList()
+      };
 
   static final QueryField ID = QueryField(fieldName: "user.id");
+  static final QueryField USER_ID = QueryField(fieldName: "user_id");
   static final QueryField NAME = QueryField(fieldName: "name");
   static final QueryField EMAIL = QueryField(fieldName: "email");
+  static final QueryField PHONR_NUMBER = QueryField(fieldName: "phonr_number");
+  static final QueryField ORDERS = QueryField(
+      fieldName: "orders",
+      fieldType: ModelFieldType(ModelFieldTypeEnum.model,
+          ofModelName: (Order).toString()));
   static var schema =
       Model.defineSchema(define: (ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "User";
@@ -93,19 +151,35 @@ class User extends Model {
     modelSchemaDefinition.addField(ModelFieldDefinition.id());
 
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        key: User.USER_ID,
+        isRequired: true,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)));
+
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
         key: User.NAME,
         isRequired: true,
         ofType: ModelFieldType(ModelFieldTypeEnum.string)));
 
     modelSchemaDefinition.addField(ModelFieldDefinition.field(
         key: User.EMAIL,
+        isRequired: true,
+        ofType: ModelFieldType(ModelFieldTypeEnum.string)));
+
+    modelSchemaDefinition.addField(ModelFieldDefinition.field(
+        key: User.PHONR_NUMBER,
         isRequired: false,
         ofType: ModelFieldType(ModelFieldTypeEnum.string)));
+
+    modelSchemaDefinition.addField(ModelFieldDefinition.hasMany(
+        key: User.ORDERS,
+        isRequired: false,
+        ofModelName: (Order).toString(),
+        associatedKey: Order.USERORDERSID));
   });
 }
 
-class UserType extends ModelType<User> {
-  const UserType();
+class _UserModelType extends ModelType<User> {
+  const _UserModelType();
 
   @override
   User fromJson(Map<String, dynamic> jsonData) {

@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "grillhouse6c67962e_identitypool_6c67962e",
+    "identityPoolName": "grillhouse6951c9b0_identitypool_6951c9b0",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "grillh6c67962e",
-    "userPoolName": "grillhouse6c67962e_userpool_6c67962e",
+    "resourceNameTruncated": "grillh6951c9b0",
+    "userPoolName": "grillhouse6951c9b0_userpool_6951c9b0",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "grillh6c67962e_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "grillh6951c9b0_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "6c67962e",
-    "resourceName": "grillhouse6c67962e",
+    "sharedId": "6951c9b0",
+    "resourceName": "grillhouse6951c9b0",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -46,6 +46,9 @@
         ]
     },
     "useDefault": "default",
+    "usernameAttributes": [
+        "email"
+    ],
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
