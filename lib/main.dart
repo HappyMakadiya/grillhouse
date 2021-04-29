@@ -11,6 +11,7 @@ import 'package:grillhouse/Screens/navbar.dart';
 import 'package:grillhouse/Utils/route_generator.dart';
 import 'package:grillhouse/models/ModelProvider.dart';
 import 'package:grillhouse/models/Todo.dart';
+import 'package:lottie/lottie.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:amplify_datastore/amplify_datastore.dart';
@@ -86,11 +87,11 @@ class _CheckUserStateState extends State<CheckUserState> {
   void initState() {
     super.initState();
 
-
     checkUserSignedIn();
   }
 
   Future<void> checkUserSignedIn() async {
+    Future.delayed(Duration(seconds: 4), () {});
     try {
       CognitoAuthSession res = await Amplify.Auth.fetchAuthSession();
       setState(() {
@@ -111,11 +112,7 @@ class _CheckUserStateState extends State<CheckUserState> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: CupertinoActivityIndicator(
-          radius: 40,
-        ),
-      ),
+      body: Center(child: CupertinoActivityIndicator(radius: 40,)),
     );
   }
 }

@@ -99,28 +99,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.fromLTRB(20, 40, 20, 0),
-                padding: EdgeInsets.all(7),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(color: Colors.black12, blurRadius: 20)
-                    ],
-                    borderRadius: BorderRadius.circular(10)),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      hintText: "Search..",
-                      prefixIcon: Icon(CupertinoIcons.search),
-                      floatingLabelBehavior: FloatingLabelBehavior.always),
-                  cursorColor: Theme.of(context).primaryColor,
-                ),
-              ),
+              // Container(
+              //   margin: EdgeInsets.fromLTRB(20, 40, 20, 0),
+              //   padding: EdgeInsets.all(7),
+              //   decoration: BoxDecoration(
+              //       color: Colors.white,
+              //       boxShadow: [
+              //         BoxShadow(color: Colors.black12, blurRadius: 20)
+              //       ],
+              //       borderRadius: BorderRadius.circular(10)),
+              //   child: TextFormField(
+              //     decoration: InputDecoration(
+              //         border: InputBorder.none,
+              //         focusedBorder: InputBorder.none,
+              //         enabledBorder: InputBorder.none,
+              //         errorBorder: InputBorder.none,
+              //         disabledBorder: InputBorder.none,
+              //         hintText: "Search..",
+              //         prefixIcon: Icon(CupertinoIcons.search),
+              //         floatingLabelBehavior: FloatingLabelBehavior.always),
+              //     cursorColor: Theme.of(context).primaryColor,
+              //   ),
+              // ),
+              SizedBox(height: 40),
               Container(
                 child: GridView.count(
                     scrollDirection: Axis.vertical,

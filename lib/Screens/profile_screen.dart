@@ -80,8 +80,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             Container(
-              margin: EdgeInsets.all(20),
-              padding: EdgeInsets.fromLTRB(40, 50, 40, 50),
+              margin: EdgeInsets.fromLTRB(30, 40, 30, 40),
+              padding: EdgeInsets.fromLTRB(40, 40, 40, 40),
               // height: MediaQuery.of(context).size.height,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -89,34 +89,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: Column(
                 children: [
-                  Material(
-                    color: Colors.white,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(10),
-                      onTap: () {},
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            AutoSizeText(
-                              "Account",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.w500),
-                            ),
-                            Icon(
-                              Icons.chevron_right_rounded,
-                              size: 38,
-                              color: Colors.grey[800],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  // Material(
+                  //   color: Colors.white,
+                  //   child: InkWell(
+                  //     borderRadius: BorderRadius.circular(10),
+                  //     onTap: () {Navigator.of(context).pushNamed('/account_screen');},
+                  //     child: Container(
+                  //       padding: EdgeInsets.all(10),
+                  //       child: Row(
+                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //         children: [
+                  //           AutoSizeText(
+                  //             "Account",
+                  //             style: TextStyle(
+                  //                 fontSize: 24, fontWeight: FontWeight.w500),
+                  //           ),
+                  //           Icon(
+                  //             Icons.chevron_right_rounded,
+                  //             size: 38,
+                  //             color: Colors.grey[800],
+                  //           )
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   height: 20,
+                  // ),
                   Material(
                     color: Colors.white,
                     child: InkWell(
