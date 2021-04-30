@@ -6,7 +6,6 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:grillhouse/Screens/home_screen.dart';
 import 'package:grillhouse/Screens/profile_screen.dart';
 import 'package:grillhouse/Utils/config.dart';
-
 import 'package:grillhouse/Screens/cart_model.dart';
 import 'package:grillhouse/models/ModelProvider.dart';
 import 'package:badges/badges.dart';

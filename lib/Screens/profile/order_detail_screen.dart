@@ -52,7 +52,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 ),
               ),
               Text("Order Detail", textAlign: TextAlign.center,style: TextStyle(fontSize: 34)),
-
               SizedBox(
                 height: 60,
               ),

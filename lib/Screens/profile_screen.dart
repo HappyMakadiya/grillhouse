@@ -117,6 +117,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // SizedBox(
                   //   height: 20,
                   // ),
+                   Material(
+                    color: Colors.white,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(10),
+                      onTap: () { Navigator.of(context).pushNamed('/order_status_screen');},
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AutoSizeText(
+                              "Order Status",
+                              style: TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.w500),
+                            ),
+                            Icon(
+                              Icons.chevron_right_rounded,
+                              size: 38,
+                              color: Colors.grey[800],
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Material(
                     color: Colors.white,
                     child: InkWell(

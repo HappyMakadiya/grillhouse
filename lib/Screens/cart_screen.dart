@@ -20,7 +20,7 @@ class _CartScreenState extends State<CartScreen> {
   var userName = "";
   var userEmail = "";
   var userID = "";
-
+  bool paymentSuccess = false;
   @override
   void initState() {
     super.initState();
@@ -49,10 +49,7 @@ class _CartScreenState extends State<CartScreen> {
         where: User.EMAIL.eq(userEmail)))[0];
 
     Order newOrder = Order(
-        user: user,
-        userID: user.id,
-        dayeTime: dtStr,
-        status: "Remaining");
+        user: user, userID: user.id, dayeTime: dtStr, status: "Remaining");
     await Amplify.DataStore.save(newOrder);
 
     Order order = (await Amplify.DataStore.query(Order.classType,
@@ -79,9 +76,8 @@ class _CartScreenState extends State<CartScreen> {
         cart: foodList,
         totalAmount: totalAmount.toString(),
         status: "Done");
-        orderList.add(order2);
+    orderList.add(order2);
     await Amplify.DataStore.save(order2);
-
 
     User newUser = user.copyWith(id: user.id, orders: orderList);
     await Amplify.DataStore.save(newUser);
@@ -107,6 +103,9 @@ class _CartScreenState extends State<CartScreen> {
 
   void handlePaymentSuccess(PaymentSuccessResponse response) {
     Fluttertoast.showToast(msg: "Payment Success");
+    setState(() {
+      paymentSuccess = true;
+    });
   }
 
   void handlePaymentError(PaymentFailureResponse response) {
@@ -326,12 +325,20 @@ class _CartScreenState extends State<CartScreen> {
                           child: RaisedButton(
                             onPressed: () async {
                               await payBill(cartModel.totalCartValue);
-                              await uploadData(
-                                  cartModel.cart, cartModel.totalCartValue);
-                              await cartModel.clearCart();
+                              if (paymentSuccess == true) {
+                                await uploadData(
+                                    cartModel.cart, cartModel.totalCartValue);
+                                await cartModel.clearCart();
+                                paymentSuccess = false;
+                                Navigator.of(context)
+                                    .pushReplacementNamed("/getcode_screen");
+                              } else {
+                                await cartModel.clearCart();
+                                paymentSuccess = false;
 
-                              Navigator.of(context)
-                                  .pushReplacementNamed("/navbar");
+                                Navigator.of(context)
+                                    .pushReplacementNamed("/navbar");
+                              }
                             },
                             child: Text("Pay & Order",
                                 style: TextStyle(color: Colors.white)),

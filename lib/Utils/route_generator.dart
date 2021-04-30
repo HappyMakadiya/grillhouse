@@ -10,14 +10,15 @@ import 'package:grillhouse/Screens/profile/past_order_screen.dart';
 import 'package:grillhouse/Screens/profile/setting_screen.dart';
 import 'package:grillhouse/Screens/review.dart';
 import 'package:grillhouse/Screens/user_info.dart';
+import 'package:grillhouse/Screens/getcode_screen.dart';
+import 'package:grillhouse/Screens/order_status_screen.dart';
 import 'package:grillhouse/main.dart';
 
-
-class RouteGenerator{
-  static Route<dynamic> generateRoute(RouteSettings settings){
+class RouteGenerator {
+  static Route<dynamic> generateRoute(RouteSettings settings) {
     final args = settings.arguments;
 
-    switch(settings.name){
+    switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => CheckUserState());
       case '/login_screen':
@@ -25,7 +26,7 @@ class RouteGenerator{
       case '/signup_screen':
         return MaterialPageRoute(builder: (_) => SignUpScreen());
       case '/home_screen':
-          return MaterialPageRoute(builder: (_) => HomeScreen());
+        return MaterialPageRoute(builder: (_) => HomeScreen());
       case '/navbar':
         return MaterialPageRoute(builder: (_) => NavBar());
       case '/account_screen':
@@ -38,11 +39,15 @@ class RouteGenerator{
         return MaterialPageRoute(builder: (_) => MyReviewScreen());
       case '/review_screen':
         return MaterialPageRoute(builder: (_) => ReviewScreen());
+      case '/getcode_screen':
+        return MaterialPageRoute(builder: (_) => GetCodeScreen());
+      case '/order_status_screen':
+        return MaterialPageRoute(builder: (_) => OrderStatusScreen());
       case '/verify_email':
-        if(args is UserInfoData){
-          return MaterialPageRoute(builder: (_) => EmailVerificationScreen(userinfo: args));
-        }
-        else{
+        if (args is UserInfoData) {
+          return MaterialPageRoute(
+              builder: (_) => EmailVerificationScreen(userinfo: args));
+        } else {
           _errorRoute();
         }
         break;
